@@ -11,6 +11,10 @@ React + Vite + Leaflet (OpenStreetMap) · AWS Amplify Hosting · API Gateway · 
 Browser ──► API Gateway ──► Lambda ──► DynamoDB (reports, auto-expire)
    │                           └────► S3 (photos via presigned URLs)
    └── hosted on Amplify
+## AWS tools used
+- AWS SAM CLI (open source): the backend is defined in backend/template.yaml
+  (API Gateway, Lambda, DynamoDB, S3) and built with `sam build`.
+- Not deployed: the live demo runs the frontend in demo mode.
 ```
 
 ## Run locally (no AWS needed)
