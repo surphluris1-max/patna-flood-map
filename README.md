@@ -5,7 +5,7 @@
 **How it works:** People drop a pin (with a photo) on a flooded street. Everyone sees it live on a map. Reports expire after 6 hours so the map stays honest.
 
 ## Tech
-React + Vite + Leaflet (OpenStreetMap) · AWS Amplify Hosting · API Gateway · Lambda (Node 20) · DynamoDB (with TTL) · S3 (photos)
+React + Vite + Leaflet (OpenStreetMap) · AWS SAM backend (API Gateway, Lambda, DynamoDB, S3), not deployed
 
 ```
 Browser ──► API Gateway ──► Lambda ──► DynamoDB (reports, auto-expire)
@@ -31,9 +31,6 @@ sam deploy --guided      # region: ap-south-1, accept defaults
 ```
 Copy the `ApiUrl` from the outputs.
 
-## Deploy the frontend
-1. Amplify Console → Host web app → GitHub → pick this repo, app root = `frontend`
-2. Environment variables → add `VITE_API_URL` = the ApiUrl above → redeploy
 
 ## Structure
 ```
