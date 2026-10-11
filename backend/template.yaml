@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Patna Flood Map backend (API Gateway + Lambda + DynamoDB + S3)
+
+Parameters:
+  ReportTtlHours:
+    Type: Number
+    Default: 6
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 10
+    MemorySize: 256
+    CodeUri: src/
+    Environment:
+      Variables:
+        TABLE: !Ref ReportsTable
+        BUCKET: !Ref PhotosBucket
+        TTL_HOURS: !Ref ReportTtlHours
+
+Resources:
+  FloodApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins: ["*"]
+        AllowMethods: [GET, POST, OPTIONS]
+        AllowHeaders: [content-type]
+
+  ReportsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions: [{ AttributeName: id, AttributeType: S }]
+      KeySchema: [{ AttributeName: id, KeyType: HASH }]
+      TimeToLiveSpecification: { AttributeName: expiresAt, Enabled: true }
+
+  PhotosBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [GET, PUT]
+            AllowedOrigins: ["*"]
+            AllowedHeaders: ["*"]
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-photos
+            Status: Enabled
+            Prefix: uploads/
+            ExpirationInDays: 2
+
+  ListReportsFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: listReports.handler
+      Policies:
+        - DynamoDBReadPolicy: { TableName: !Ref ReportsTable }
+        - S3ReadPolicy: { BucketName: !Ref PhotosBucket }
+      Events:
+        Api: { Type: HttpApi, Properties: { ApiId: !Ref FloodApi, Path: /reports, Method: GET } }
+
+  CreateReportFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: createReport.handler
+      Policies:
+        - DynamoDBWritePolicy: { TableName: !Ref ReportsTable }
+      Events:
+        Api: { Type: HttpApi, Properties: { ApiId: !Ref FloodApi, Path: /reports, Method: POST } }
+
+  UploadUrlFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: getUploadUrl.handler
+      Policies:
+        - S3WritePolicy: { BucketName: !Ref PhotosBucket }
+      Events:
+        Api: { Type: HttpApi, Properties: { ApiId: !Ref FloodApi, Path: /upload-url, Method: POST } }
+
+Outputs:
+  ApiUrl:
+    Description: Put this in VITE_API_URL
+    Value: !Sub "https://${FloodApi}.execute-api.${AWS::Region}.amazonaws.com"

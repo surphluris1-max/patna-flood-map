@@ -1,0 +1,60 @@
+:root {
+  --paper: #eef3f5; --card: #fff; --ink: #12232b; --muted: #5a6d75; --line: #cddbe0;
+  --water: #0f6e8c; --danger: #c1272d;
+  font-family: "Hind", system-ui, sans-serif; color: var(--ink); background: var(--paper);
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+button, textarea, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--water); outline-offset: 2px; }
+
+.app { height: 100%; display: grid; grid-template-columns: 380px 1fr; }
+.panel { padding: 20px; overflow-y: auto; background: var(--paper); border-right: 1px solid var(--line); }
+.panel h1 { font-size: 1.7rem; line-height: 1.15; margin: 0 0 8px; }
+.sub { margin: 0 0 16px; color: var(--muted); max-width: 40ch; }
+.note { font-size: .85rem; color: var(--muted); }
+.error { color: var(--danger); }
+.empty { color: var(--muted); }
+
+.primary { background: var(--water); color: #fff; border: 0; border-radius: 8px; padding: 12px 18px; font-weight: 700; }
+.primary:disabled { opacity: .6; cursor: default; }
+.panel .primary { width: 100%; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; list-style: none; padding: 0; margin: 16px 0; font-size: .9rem; }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.dot { width: 14px; height: 14px; border-radius: 50%; flex: none; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--line); }
+
+.reports { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.reports li { border-bottom: 1px solid var(--line); }
+.reports button { width: 100%; display: flex; gap: 12px; align-items: flex-start; background: none; border: 0; padding: 12px 0; text-align: left; }
+.reports .body { flex: 1; display: grid; gap: 2px; }
+.reports .body span { color: var(--muted); font-size: .92rem; }
+.reports small { color: var(--muted); white-space: nowrap; }
+
+.map-wrap { position: relative; min-height: 0; }
+.map-wrap .leaflet-container { height: 100%; width: 100%; }
+.map-wrap.picking .leaflet-container { cursor: crosshair; }
+.hint { position: absolute; z-index: 1100; top: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; align-items: center;
+  background: var(--ink); color: #fff; padding: 10px 14px; border-radius: 8px; }
+.hint button { background: none; border: 1px solid #fff6; color: #fff; border-radius: 6px; padding: 4px 10px; }
+.popup-photo { width: 100%; max-width: 220px; border-radius: 6px; margin: 6px 0; }
+
+.overlay { position: fixed; inset: 0; z-index: 2000; background: #12232b99; display: grid; place-items: center; padding: 16px; }
+.sheet { width: min(480px, 100%); max-height: 100%; overflow-y: auto; background: var(--card); border-radius: 12px; padding: 20px; display: grid; gap: 14px; }
+.sheet h2 { margin: 0; }
+.sheet label { display: grid; gap: 6px; font-weight: 500; }
+.sheet textarea { border: 1px solid var(--line); border-radius: 8px; padding: 10px; resize: vertical; }
+.severity { display: grid; gap: 8px; }
+.severity button { text-align: left; display: grid; padding: 10px 12px; background: var(--card); border: 2px solid var(--line); border-left: 8px solid var(--c); border-radius: 8px; }
+.severity button span { color: var(--muted); font-size: .9rem; }
+.severity button.on { border-color: var(--c); background: var(--paper); }
+.actions { display: flex; justify-content: flex-end; gap: 10px; }
+.actions button:not(.primary) { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 12px 18px; }
+
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; grid-template-rows: 56% 44%; }
+  .map-wrap { order: 1; }
+  .panel { order: 2; border-right: 0; border-top: 1px solid var(--line); padding: 14px; }
+  .panel h1 { font-size: 1.3rem; }
+}
