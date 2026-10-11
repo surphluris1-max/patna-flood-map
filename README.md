@@ -44,4 +44,4 @@ backend/src/                      3 Lambda handlers
 ```
 
 ## Ideas to extend
-SNS SMS alerts for saved areas · rain forecast from Open-Meteo · "still flooded?" confirm button · Hindi labels
+SNS SMS alerts for saved areas · rain forecast from Open-Meteo · "still flooded?" confirm button · Hindi labels · add some ai features and some community suggestion
